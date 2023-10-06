@@ -6,6 +6,9 @@ public class PlayerController : MonoBehaviour
 {
 
     private int count;
+    private float startPos;
+    private float newPos;
+
     // Start is called before the first frame update
     void Start()
     {
