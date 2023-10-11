@@ -743,7 +743,7 @@ MonoBehaviour:
   m_ActionEvents: []
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
-  m_DefaultActionMap: UI
+  m_DefaultActionMap: 2f4cb80e-2afc-432e-abd9-57c4ffbf4ce9
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
 --- !u!1 &742503041
@@ -1512,6 +1512,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveValue: {x: 0, y: 0}
+  oldPosition: {x: 0, y: 0, z: 0}
   speed: 500
   scoreText: {fileID: 703251194}
   winText: {fileID: 1996590033}
