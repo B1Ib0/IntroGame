@@ -1,4 +1,5 @@
 using NUnit.Framework.Constraints;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -16,6 +17,7 @@ public class GameController : MonoBehaviour
     public TextMeshProUGUI closePickUp;
     public TextMeshProUGUI playerPosition;
     public TextMeshProUGUI playerVelocity;
+    private PlayerController playerScript;
     private Mode mode;
 
     private enum Mode
@@ -32,10 +34,13 @@ public class GameController : MonoBehaviour
         mode = Mode.normal;
         pickUps = GameObject.FindGameObjectsWithTag("PickUp");
         lineRenderer = gameObject.AddComponent<LineRenderer>();
+        lineRenderer.startWidth = 0.1f;
+        lineRenderer.endWidth = 0.1f;
         lineRenderer.enabled = false;
         playerPosition.enabled = false;
         playerVelocity.enabled = false;
         closePickUp.enabled = false;
+        playerScript = player.GetComponent<PlayerController>();
     }
 
     // Update is called once per frame
@@ -45,7 +50,7 @@ public class GameController : MonoBehaviour
         {
             DebugMode();
         }
-        else
+        else if (mode == Mode.vision)
         {
             VisionMode();
         }
@@ -54,7 +59,6 @@ public class GameController : MonoBehaviour
     }
     void OnSwitchMode()
     {
-        print("E");
         if (mode == Mode.normal)
         {
             mode = Mode.debug;
@@ -70,6 +74,10 @@ public class GameController : MonoBehaviour
         else if (mode == Mode.vision)
         {
             mode = Mode.normal;
+            for (int i = 0; i < pickUps.Length; i++) 
+            {
+                pickUps[i].GetComponent<Renderer>().material.color = Color.white;   
+            }
             lineRenderer.enabled = false;
             playerPosition.enabled = false;
             playerVelocity.enabled = false;
@@ -99,18 +107,52 @@ public class GameController : MonoBehaviour
             }
             lineRenderer.SetPosition(0, pickUps[closest].transform.position);
             lineRenderer.SetPosition(1, player.transform.position);
-            lineRenderer.startWidth = 0.1f;
-            lineRenderer.endWidth = 0.1f;
+
             closePickUp.text = "Pick Up Distance: " + closestDistance.ToString("0.00");
             pickUps[closest].GetComponent<Renderer>().material.color = Color.blue;
 
         }
-        catch (System.Exception e) { }
+        catch (System.Exception e) {
+            lineRenderer.enabled = false;
 
+        }
+
+    }
+
+    private float CountDistance(Vector3 a, Vector3 b) {
+        float distance = 0;
+        distance = (float)(Math.Pow(Math.Abs(a.x * b.z - b.x * a.z), 0.5) / Math.Pow(Math.Pow(a.x, 2) + Math.Pow(a.z, 2), 0.5));
+        return distance;
     }
 
     private void VisionMode()
     {
+        Vector3 towards = (player.transform.position - playerScript.oldPosition) * 50;
+        try
+        {
+            pickUps = GameObject.FindGameObjectsWithTag("PickUp");
 
+
+            float minimum = Mathf.Infinity;
+            int closest = 0;
+            for (int i = 0; i < pickUps.Length; i++)
+            {
+                pickUps[i].GetComponent<Renderer>().material.color = Color.white;
+                if (CountDistance(towards, pickUps[i].transform.position - player.transform.position) <= minimum && (towards.x * (pickUps[i].transform.position - player.transform.position).x + towards.z * (pickUps[i].transform.position - player.transform.position).z) >= 0)
+                {
+                    minimum = CountDistance(towards, pickUps[i].transform.position - player.transform.position);
+                    closest = i;
+                }
+            }
+
+            pickUps[closest].GetComponent<Renderer>().material.color = Color.green;
+            pickUps[closest].transform.LookAt(player.transform.position);
+
+
+
+
+        } catch (Exception e) { }
+        lineRenderer.SetPosition(0, player.transform.position);
+        lineRenderer.SetPosition(1, player.transform.position + towards);
     }
 }

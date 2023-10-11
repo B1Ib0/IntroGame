@@ -10,7 +10,7 @@ public class PlayerController : MonoBehaviour
 {
 
     public Vector2 moveValue;
-    private Vector3 oldPosition;
+    public Vector3 oldPosition;
     private Vector3 newPosition;
     public float speed;
     private int count;
