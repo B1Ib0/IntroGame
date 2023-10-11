@@ -59,6 +59,7 @@ public class GameController : MonoBehaviour
     }
     void OnSwitchMode()
     {
+        print("E");
         if (mode == Mode.normal)
         {
             mode = Mode.debug;
