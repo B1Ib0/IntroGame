@@ -19,6 +19,7 @@ public class PlayerController : MonoBehaviour
     public TextMeshProUGUI winText;
     public TextMeshProUGUI playerPosition;
     public TextMeshProUGUI playerVelocity;
+    private Keyboard kb;
 
     private void Start()
     {
@@ -27,6 +28,7 @@ public class PlayerController : MonoBehaviour
         count = 0;
         winText.text = "";
         setCountText();
+        if (kb != null ) { kb = InputSystem.GetDevice<Keyboard>(); }
     }
 
 
